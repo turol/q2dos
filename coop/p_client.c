@@ -2976,9 +2976,12 @@ ClientDisconnect(edict_t *ent)
 	gi.unlinkentity(ent);
 	ent->s.modelindex = 0;
 	ent->solid = SOLID_NOT;
+	ent->s.solid = 0; /* FS: Need to set this too to avoid weird zombie state that can occur on disconnect sometimes in Coop. */
+	gi.linkentity(ent); /* FS: We change the solid state, need to relink to push it across for prediction. */
 	ent->inuse = false;
 	ent->classname = "disconnected";
 	ent->client->pers.connected = false;
+	gi.unlinkentity(ent); /* FS: OK, now it's safe to unlink. */
 
 	playernum = ent - g_edicts - 1;
 	gi.configstring(CS_PLAYERSKINS + playernum, "");

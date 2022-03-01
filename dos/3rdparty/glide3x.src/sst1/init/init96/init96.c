@@ -186,6 +186,35 @@ devNum,
 physAddr,
 fifoMTRRNum = 0xffffffff;
 
+/*---- copied from initvg/parse.c here for SST96 ------------*/
+const char*
+myGetenv(const char* envKey)
+{
+  FxBool callRealGetenvP = FXTRUE;
+
+#if __WIN32__
+  /* NB: If were being called from cya code in
+   * DllMain(DLL_PROCESS_DETACH) because the current app has called
+   * exit() or dropped off of the end of main the per dll environ
+   * string table has been freed by the c runtime but has not been set
+   * to NULL. Bad things happen if this memory has been unmapped by
+   * the system or if the string cannot be found.  
+   */
+  {
+    HANDLE curProcessHandle = GetCurrentProcess();
+    DWORD exitCode = STILL_ACTIVE;
+
+    callRealGetenvP = ((curProcessHandle != NULL) &&
+                       GetExitCodeProcess(curProcessHandle, &exitCode) &&
+                       (exitCode == STILL_ACTIVE));
+  }
+#endif /* __WIN32__ */
+
+  return (callRealGetenvP
+          ? getenv(envKey)
+          : NULL);
+}
+
 /*-----------Debuging Info Data------------------------------*/
 #ifdef GDBG_INFO_ON
 /* NOTE:
@@ -602,9 +631,11 @@ Init96GetTmuMemory(FxU32 *sstbase, VG96Info *info, FxU32 tmu,
         FxU32 *TmuMemorySize)
 {
   FxU32 data;
+  const char *envp;
   
-  if(myGetenv(("SST96_TMUMEM_SIZE"))) {
-    *TmuMemorySize = atoi(myGetenv(("SST96_TMUMEM_SIZE")));
+  envp = myGetenv(("SST96_TMUMEM_SIZE"));
+  if(envp) {
+    *TmuMemorySize = atoi(envp);
     return(FXTRUE);
   }
   SET(sstPtr->trexInit0, 0x05441);
@@ -941,14 +972,17 @@ init96SetupRendering(InitRegisterDesc *regDesc, GrScreenResolution_t sRes)
   GDBG_INFO((80, "%s:  Setting TMU FT & TF delays\n", FN_NAME));
   {
     FxU32 trexinit0, trexinit1;
+    const char *envp;
 
-    if( !myGetenv(("SST_TREX0INIT0")) ||
-        (sscanf(myGetenv(("SST_TREX0INIT0")), "%i", &trexinit0) != 1) ) {
+    envp = myGetenv(("SST_TREX0INIT0"));
+    if( !envp ||
+        (sscanf(envp, "%i", &trexinit0) != 1) ) {
       trexinit0 = 0x05441;      /* TREXINIT0 */
     }
 
-    if( !myGetenv(("SST_TREX0INIT1")) ||
-        (sscanf(myGetenv(("SST_TREX0INIT1")), "%i", &trexinit1) != 1) ) {
+    envp = myGetenv(("SST_TREX0INIT1"));
+    if( !envp ||
+        (sscanf(envp, "%i", &trexinit1) != 1) ) {
       trexinit1 = 0x3643c; /* TREXINIT1 */
     }
 
@@ -2074,6 +2108,7 @@ init96LoadBufRegs(int nBuffers, InitBufDesc_t *pBufDesc, int xRes,
   InitBufDesc_t   *pTriple = NULL;
   InitBufDesc_t   *pAux    = NULL;
   InitBufDesc_t   *pFifo   = NULL;
+  const char      *envp;
   int i;
 
   GDBG_INFO((80, "(%s) w = %d, h = %d, n = %d\n",
@@ -2122,10 +2157,11 @@ init96LoadBufRegs(int nBuffers, InitBufDesc_t *pBufDesc, int xRes,
   GDBG_INFO((80,"pFront = %.08x, pBack = %.08x, pTriple = %.08x, pAux = %.08x, pFifo = %.08x\n",
              pFront, pBack, pTriple, pAux, pFifo));
 
-  if (myGetenv("SST96_FORCEALIGN")) {
+  envp = myGetenv("SST96_FORCEALIGN");
+  if (envp) {
     FxU32 F, B, T, A;
 
-    if (sscanf(myGetenv("SST96_FORCEALIGN"), "%x,%x,%x,%x", &F, &B, &T, &A) == 4)
+    if (sscanf(envp, "%x,%x,%x,%x", &F, &B, &T, &A) == 4)
     {
       GDBG_INFO((80, "!!!!!GROSS HACK... forcing values!!!!!\n"));
       pFront->bufOffset = F;

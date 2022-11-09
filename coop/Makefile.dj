@@ -5,6 +5,7 @@ DXE3GEN = dxe3gen
 
 GAME = dm_ball.o \
 	dm_tag.o \
+	flashlight.o \
 	g_ai.o \
 	g_chase.o \
 	g_cmds.o \

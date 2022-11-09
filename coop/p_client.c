@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+#include "flashlight.h"
 
 edict_t *pm_passent;
 
@@ -2221,6 +2222,11 @@ spectator_respawn(edict_t *ent)
 	if (ent->client->blinky_client.cam_target) /* FS: Added */
 	{
 		stopBlinkyCam(ent);
+	}
+
+	if (ent->client->flashlight)
+	{
+		FlashlightReset(ent->client->flashlight);
 	}
 
 	/* clear score on respawn */

@@ -798,6 +798,7 @@ extern	cvar_t	*g_select_empty;
 extern	cvar_t	*dedicated;
 
 extern	cvar_t	*filterban;
+extern	cvar_t	*flashlightmode; //QW/ mode for flashlight code.
 
 extern	cvar_t	*sv_gravity;
 extern	cvar_t	*sv_maxvelocity;
@@ -1560,6 +1561,10 @@ struct gclient_s
 
 	float summon_time; /* FS: Added */
 	float dropTimeout; /* FS: Added */
+
+	// flashlight
+	edict_t* flashlight;
+	int		flashtype;
 };
 
 struct edict_s

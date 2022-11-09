@@ -240,6 +240,7 @@
     <ClCompile Include="..\coop\b_cam.c" />
     <ClCompile Include="..\coop\dm_ball.c" />
     <ClCompile Include="..\coop\dm_tag.c" />
+    <ClCompile Include="..\coop\flashlight.c" />
     <ClCompile Include="..\coop\g_ai.c" />
     <ClCompile Include="..\coop\g_chase.c" />
     <ClCompile Include="..\coop\g_cmds.c" />
@@ -324,6 +325,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\coop\b_cam.h" />
+    <ClInclude Include="..\coop\flashlight.h" />
     <ClInclude Include="..\coop\game.h" />
     <ClInclude Include="..\coop\g_local.h" />
     <ClInclude Include="..\coop\menu.h" />

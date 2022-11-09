@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+#include "flashlight.h"
 
 extern void SP_info_coop_checkpoint (edict_t * self );
 extern void stopCamera(edict_t *self); /* FS: Zaero specific game dll changes */
@@ -1629,31 +1630,31 @@ void sayCmd_CheckVote(edict_t *ent, char *voteChat)
 	if(!voteChat || voteChat[0] == '\0')
 		return;
 
-	if(!stricmp(voteChat, "vote yes"))
+	if(!Q_stricmp(voteChat, "vote yes"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote yes\n");
 		gi.unicast(ent, true);
 	}
-	else if(!stricmp(voteChat, "vote no"))
+	else if(!Q_stricmp(voteChat, "vote no"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote no\n");
 		gi.unicast(ent, true);
 	}
-	else if(!stricmp(voteChat, "vote stop"))
+	else if (!Q_stricmp(voteChat, "vote stop"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote stop\n");
 		gi.unicast(ent, true);
 	}
-	else if(!stricmp(voteChat, "vote restartmap"))
+	else if (!Q_stricmp(voteChat, "vote restartmap"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote restartmap\n");
 		gi.unicast(ent, true);
 	}
-	else if(!stricmp(voteChat, "vote playerexit"))
+	else if (!Q_stricmp(voteChat, "vote playerexit"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote playerexit\n");
@@ -1695,13 +1696,13 @@ void sayCmd_CheckVote(edict_t *ent, char *voteChat)
 		gi.WriteString(va("%s\n", voteChat));
 		gi.unicast(ent, true);
 	}
-	else if ( !stricmp(voteChat, "vote help")	|| !stricmp(voteChat, "vote list") || !stricmp(voteChat, "vote cmds")	|| !stricmp(voteChat, "vote commands") )
+	else if (!Q_stricmp(voteChat, "vote help") || !Q_stricmp(voteChat, "vote list") || !Q_stricmp(voteChat, "vote cmds") || !Q_stricmp(voteChat, "vote commands"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote help\n");
 		gi.unicast(ent, true);
 	}
-	else if (!stricmp(voteChat, "vote progress"))
+	else if (!Q_stricmp(voteChat, "vote progress"))
 	{
 		gi.WriteByte(svc_stufftext);
 		gi.WriteString("vote progress\n");
@@ -1711,13 +1712,13 @@ void sayCmd_CheckVote(edict_t *ent, char *voteChat)
 	{
 		if(bVoteInProgress && !ent->hasVoted)
 		{
-			if(!stricmp(voteChat, "yes"))
+			if (!Q_stricmp(voteChat, "yes"))
 			{
 				gi.WriteByte(svc_stufftext);
 				gi.WriteString("vote yes\n");
 				gi.unicast(ent, true);
 			}
-			else if (!stricmp(voteChat, "no"))
+			else if (!Q_stricmp(voteChat, "no"))
 			{
 				gi.WriteByte(svc_stufftext);
 				gi.WriteString("vote no\n");
@@ -2328,6 +2329,12 @@ ClientCommand(edict_t *ent)
 			SelectPrevItem (ent, -1);
 		}
 	
+		return;
+	}
+
+	if (Q_stricmp(cmd, "flashlight") == 0)
+	{
+		Cmd_Flashlight(ent);
 		return;
 	}
 

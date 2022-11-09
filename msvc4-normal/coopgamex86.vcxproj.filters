@@ -258,6 +258,9 @@
     <ClCompile Include="..\coop\z_weapon.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\coop\flashlight.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\coop\game.def">
@@ -401,6 +404,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\coop\z_sentien.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\coop\flashlight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

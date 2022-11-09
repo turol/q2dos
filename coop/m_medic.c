@@ -1495,6 +1495,12 @@ medic_cable_attack_rogue(edict_t *self) /* FS: Coop: Rogue specific */
 	/* adjust start for beam origin being in middle of a segment */
 	VectorMA(start, 8, f, start);
 
+	if (!self->enemy)
+	{
+		abortHeal(self, true, false, false);
+		return;
+	}
+
 	/* adjust end z for end spot since the monster is currently dead */
 	VectorCopy(self->enemy->s.origin, end);
 	end[2] = self->enemy->absmin[2] + self->enemy->size[2] / 2;

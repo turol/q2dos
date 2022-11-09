@@ -14,6 +14,10 @@ stalker
 		   ((*(long *)&(x) & 0x007fffffL)!=0000000000L))
 #endif
 
+#if defined(LINUX) && !defined(_WIN32) //QW//
+#define _isnan isnan
+#endif
+
 static int sound_pain;
 static int sound_die;
 static int sound_sight;

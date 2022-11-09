@@ -743,6 +743,7 @@ extern	int lastgibframe;
 #define MOD_SONICCANNON		  60 /* FS: Zaero specific changes */
 #define MOD_AUTOCANNON		  61 /* FS: Zaero specific changes */
 #define MOD_GL_POLYBLEND	62 /* FS: Zaero specific changes */
+#define MOD_GRAPPLE         64 /* Stross & Asa */
 
 extern	int	meansOfDeath;
 
@@ -780,6 +781,7 @@ extern	cvar_t	*sv_coop_blinky_cam_disallowflags; /* FS: Added */
 extern	cvar_t	*sv_drop_timeout; /* FS: Added */
 extern	cvar_t	*sv_spawn_protection; /* FS: Coop: Spawn protection */
 extern	cvar_t	*sv_spawn_protection_time; /* FS: Coop: Spawn protection */
+extern	cvar_t	*sv_allow_hook; /* FS: Coop: Added */
 extern	cvar_t	*motd; /* FS: Coop: Added */
 extern	cvar_t	*adminpass; /* FS: Coop: Admin goodies */
 extern	cvar_t	*vippass; /* FS: Coop: VIP goodies */
@@ -1565,6 +1567,10 @@ struct gclient_s
 	// flashlight
 	edict_t* flashlight;
 	int		flashtype;
+
+	// hook
+	int		hook_state;
+	edict_t	*hook;
 };
 
 struct edict_s
@@ -1790,6 +1796,8 @@ struct edict_s
 
 	// Knightmare- this sets blood type on damage for monsters
 	int			blood_type;
+
+	edict_t	*hook_laser;
 };
 
 //zaero debug includes (need type info)

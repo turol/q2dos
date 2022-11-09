@@ -42,6 +42,7 @@ cvar_t *sv_coop_blinky_cam_disallowflags; /* FS: Added */
 cvar_t *sv_drop_timeout; /* FS: Added */
 cvar_t *sv_spawn_protection; /* FS: Coop: Spawn protection */
 cvar_t *sv_spawn_protection_time; /* FS: Coop: Spawn protection */
+cvar_t *sv_allow_hook; /* FS: Coop: Added */
 cvar_t *motd; /* FS: Coop: Added */
 cvar_t *adminpass; /* FS: Coop: Admin goodies */
 cvar_t *vippass; /* FS: Coop: VIP goodies */

@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include "p_hook.h"
 #include "m_player.h"
 #include "flashlight.h"
 
@@ -882,6 +883,10 @@ ClientObituary(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker
 					message = "got microwaved by";
 					message2 = "";
 					break;
+				case MOD_GRAPPLE:
+					message = "was caught by";
+					message2 = "'s grapple";
+					break;
 				default:
 					break;
 			}
@@ -1163,6 +1168,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		LookAtKiller(self, inflictor, attacker);
 		self->client->ps.pmove.pm_type = PM_DEAD;
 		ClientObituary(self, inflictor, attacker);
+		hook_reset(self->client->hook);
 		TossClientWeapon(self);
 
 		if (deathmatch->intValue)
@@ -2559,6 +2565,38 @@ ClientBeginDeathmatch(edict_t *ent)
 	ClientEndServerFrame(ent);
 }
 
+void ClientShowMOTD(edict_t* ent)
+{
+	FILE* motd_file;
+	char motdPath[MAX_QPATH];
+	char motd[8192];
+	char line[80];
+
+	if (!ent || !ent->inuse || !ent->client)
+	{
+		return;
+	}
+
+	// Generate the path to the MOTD file.
+	Com_sprintf(motdPath, sizeof motdPath, "%s/%s", gamedir->string, "motd.txt");
+
+	if ((motd_file = fopen(motdPath, "r")) != NULL)
+	{
+		if (motd_file)
+		{
+			if (fgets(motd, 8192, motd_file))
+			{
+				while (fgets(line, 80, motd_file))
+				{
+					strcat(motd, line);
+				}
+				gi.centerprintf(ent, "%s", motd);
+			}
+			fclose(motd_file);
+		}
+	}
+}
+
 /*
  * called when a client has finished connecting, and is ready
  * to be placed into the game.  This will happen every level load.
@@ -2639,6 +2677,15 @@ ClientBegin(edict_t *ent)
 			gi.bprintf(PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
 		}
 	}
+
+	gi.WriteByte(svc_stufftext);
+	gi.WriteString("alias +hook \"cmd hook\"\n");
+	gi.unicast(ent, true);
+
+	gi.WriteByte(svc_stufftext);
+	gi.WriteString("alias -hook \"cmd unhook\"\n");
+	gi.unicast(ent, true);
+	ClientShowMOTD(ent);
 
 	ent->client->pers.connected = true; /* FS: Fix for players command and q2admin commands */
 
@@ -2946,6 +2993,8 @@ ClientDisconnect(edict_t *ent)
 		vote_disconnect_recalc(ent);
 	}
 
+	hook_reset(ent->client->hook);
+
 	gi.bprintf(PRINT_HIGH, "%s disconnected\n", ent->client->pers.netname);
 
  	/* FS: Coop: Rogue specific.  Probably OK to leave as-is. */
@@ -3063,6 +3112,9 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	level.current_entity = ent;
 	client = ent->client;
 
+	if ((client->hook_state == HOOK_ON) && client->hook)
+		hook_service(client->hook);
+
 	Blinky_RunRun(ent, ucmd);
 
 	if (level.intermissiontime)
@@ -3115,13 +3167,19 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			client->ps.pmove.pm_type = PM_NORMAL;
 		}
 
-		if(game.gametype == rogue_coop) /* FS: Coop: Rogue specific */
-		{
-			client->ps.pmove.gravity = sv_gravity->value * ent->gravity;
+		if (client->hook_state == HOOK_ON) {
+			client->ps.pmove.gravity = 0;
 		}
 		else
 		{
-			client->ps.pmove.gravity = sv_gravity->value;
+			if(game.gametype == rogue_coop) /* FS: Coop: Rogue specific */
+			{
+				client->ps.pmove.gravity = sv_gravity->value * ent->gravity;
+			}
+			else
+			{
+				client->ps.pmove.gravity = sv_gravity->value;
+			}
 		}
 
 		pm.s = client->ps.pmove;
@@ -3316,6 +3374,15 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		{
 			Blinky_UpdateCameraThink(other); /* FS: Blinky's Coop Camera */
 		}
+	}
+
+	if ((client->hook_state == HOOK_ON) && (VectorLength(ent->velocity) < 10))
+	{
+		client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
+	}
+	else
+	{
+		client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
 	}
 
 	vote_Think(); /* FS: Coop: Voting */

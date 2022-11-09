@@ -74,7 +74,7 @@
  * in tables/ are changed, otherwise
  * strange things may happen.
  */
-#define SAVEGAMEVER "YQ2-4"
+#define SAVEGAMEVER "YQ2-5"
 
 /*
  * This macros are used to
@@ -256,6 +256,8 @@ InitGame(void)
 	gi.cvar_setdescription("sv_spawn_protection", "Enable spawn protection by enabling temporary invincibility and immunity from telefragging.  Time set in seconds with sv_spawn_protection_time.");
 	sv_spawn_protection_time = gi.cvar("sv_spawn_protection_time", "3", 0); /* FS: Coop: Spawn protection */
 	gi.cvar_setdescription("sv_spawn_protection_time", "Time (in seconds) for spawn protection.  Requires sv_spawn_protection to be enabled.");
+	sv_allow_hook = gi.cvar("sv_allow_hook", "1", 0); /* FS: Coop: Added */
+	gi.cvar_setdescription("sv_allow_hook", "Enable grappling hook.");
 	adminpass = gi.cvar("adminpass", "", 0);
 	gi.cvar_setdescription("adminpass", "Administator password for special commands.  Not related to RCON.");
 	vippass = gi.cvar("vippass", "", 0);

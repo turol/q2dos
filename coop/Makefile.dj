@@ -68,6 +68,7 @@ GAME = dm_ball.o \
 	m_widow2.o \
 	menu.o \
 	p_client.o \
+	p_hook.o \
 	p_hud.o \
 	p_trail.o \
 	p_view.o \

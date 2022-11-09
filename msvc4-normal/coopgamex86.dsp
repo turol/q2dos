@@ -360,6 +360,10 @@ SOURCE=..\coop\p_client.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\coop\p_hook.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\coop\p_hud.c
 # End Source File
 # Begin Source File

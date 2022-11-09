@@ -2644,6 +2644,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\coop\p_hook.c"
+				>
+			</File>
+			<File
 				RelativePath="..\coop\p_hud.c"
 				>
 				<FileConfiguration
@@ -3038,6 +3042,10 @@
 			</File>
 			<File
 				RelativePath="..\coop\menu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\coop\p_hook.h"
 				>
 			</File>
 			<File

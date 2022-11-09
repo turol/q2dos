@@ -1,4 +1,5 @@
 #include "g_local.h"
+#include "p_hook.h"
 #include "m_player.h"
 #include "flashlight.h"
 
@@ -2559,6 +2560,15 @@ ClientCommand(edict_t *ent)
 	else if ((Q_stricmp(cmd, "push") == 0) || (Q_stricmp(cmd,"pull") == 0))
 	{
 		/* FS: Purposely do nothing.  This somehow got in my cfgs, and some other users.  I see this happen to people during vid_restarts and vid_restarts are firing off mwheelup and mwheeldown for some reason... */
+	}
+	else if (Q_stricmp(cmd, "hook") == 0)
+	{
+		hook_fire(ent);
+	}
+	else if (Q_stricmp(cmd, "unhook") == 0)
+	{
+		if (ent->client->hook)
+			hook_reset(ent->client->hook);
 	}
 	else /* anything that doesn't match a command will be a chat */
 	{

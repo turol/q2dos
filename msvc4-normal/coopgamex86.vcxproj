@@ -303,6 +303,7 @@
     <ClCompile Include="..\coop\m_widow.c" />
     <ClCompile Include="..\coop\m_widow2.c" />
     <ClCompile Include="..\coop\p_client.c" />
+    <ClCompile Include="..\coop\p_hook.c" />
     <ClCompile Include="..\coop\p_hud.c" />
     <ClCompile Include="..\coop\p_trail.c" />
     <ClCompile Include="..\coop\p_view.c" />
@@ -359,6 +360,7 @@
     <ClInclude Include="..\coop\m_turret.h" />
     <ClInclude Include="..\coop\m_widow.h" />
     <ClInclude Include="..\coop\m_widow2.h" />
+    <ClInclude Include="..\coop\p_hook.h" />
     <ClInclude Include="..\coop\q_shared.h" />
     <ClInclude Include="..\coop\tables\clientfields.h" />
     <ClInclude Include="..\coop\tables\fields.h" />

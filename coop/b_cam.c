@@ -166,7 +166,6 @@ static void ShowStats(edict_t *ent, edict_t *player)
 {
 	vec3_t v;
 	char stats[500];
-	BlinkyClient_t *bdata;
 	char pname[11];
 	int health, armor, armorpow;
 	int xd,yd,zd;
@@ -174,7 +173,7 @@ static void ShowStats(edict_t *ent, edict_t *player)
 	static int CellsIndex = -1;
 	int index;
 
-	if (!ent || !player)
+	if (!ent || !player || !player->client)
 	{
 		return;
 	}
@@ -185,8 +184,6 @@ static void ShowStats(edict_t *ent, edict_t *player)
 	{
 		CellsIndex = ITEM_INDEX(FindItem("cells"));
 	}
-
-	bdata = &ent->client->blinky_client;
 
 	VectorSubtract(ent->s.origin, player->s.origin, v);
 	zd = -v[2]/SCANNER_UNIT; // save height differential
@@ -861,7 +858,6 @@ void Cmd_Summon_f(edict_t *ent)
 void Cmd_Teleport_f(edict_t *ent)
 {
 	char *name = gi.args();
-	int i = 0;
 	edict_t *player;
 	qboolean exactMatch = true;
 

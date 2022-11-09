@@ -1368,17 +1368,19 @@ void SP_monster_sentien(edict_t *self)
 
 	create_sentien_laser(self);
 
-	if (skill->intValue == 2)
+	if (self->laser)
 	{
-		self->laser->dmg *= 1.5;
-		self->yaw_speed *= 1.5;
+		if (skill->intValue == 2)
+		{
+			self->laser->dmg *= 1.5;
+			self->yaw_speed *= 1.5;
+		}
+		else if(skill->intValue >= 3)
+		{
+			self->laser->dmg *= 2.5;
+			self->yaw_speed *= 2;
+		}
 	}
-	else if(skill->intValue >= 3)
-	{
-		self->laser->dmg *= 2.5;
-		self->yaw_speed *= 2;
-	}
-
 
 	self->monsterinfo.currentmove = &sentien_move_stand1;
 	self->monsterinfo.scale = MODEL_SCALE;

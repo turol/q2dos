@@ -573,7 +573,8 @@ G_SetStats(edict_t *ent)
 	{
 		ent->client->ps.stats[STAT_TIMER_ICON] = gi.imageindex("p_ir");
 		ent->client->ps.stats[STAT_TIMER] =
-			(ent->client->ir_framenum - level.framenum) / 10; }
+			(ent->client->ir_framenum - level.framenum) / 10;
+	}
 	else
 	{
 		ent->client->ps.stats[STAT_TIMER_ICON] = 0;

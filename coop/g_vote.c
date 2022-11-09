@@ -918,6 +918,7 @@ static void vote_SetGamemodeCVAR (char *gamemode)
 		gi.cvar_forceset("sv_coop_gamemode_vote", gamemode);
 	}
 }
+
 void vote_Passed (void)
 {
 	vote_Broadcast("Vote passed for %s: %s! Yes: %i, No: %i\n", voteType, whatAreWeVotingFor, voteYes, voteNo);
@@ -984,7 +985,6 @@ void vote_Failed (qboolean bTied)
 void vote_Broadcast(const char *fmt, ...)
 {
 	int z;
-	int clients;
 	edict_t *pClient;
 	char        msg[1024];
 	va_list     argptr;
@@ -992,8 +992,6 @@ void vote_Broadcast(const char *fmt, ...)
 	va_start (argptr,fmt);
 	Q_vsnprintf(msg, sizeof(msg), fmt, argptr); /* Knightmare 10/28/12- buffer-safe version */
 	va_end (argptr);
-
-	clients = 0;
 
 	if(dedicated->intValue)
 	{

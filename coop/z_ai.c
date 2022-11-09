@@ -212,7 +212,7 @@ int zSchoolMonsters(edict_t *self, float dist, int runStyle, float *currentSpeed
 		if(!zFindRoamYaw(self, 10))
 		{
 			// Rule 3) Maintain a minimum distance from those around you
-			if(distanceToNearest <= self->monsterinfo.zSchoolMinimumDistance)
+			if ((distanceToNearest <= self->monsterinfo.zSchoolMinimumDistance) && (nearestEntity != NULL))
 			{
 				self->ideal_yaw = nearestEntity->s.angles[YAW];
 				self->speed = nearestEntity->speed;

@@ -121,7 +121,7 @@ SV_RunThink(edict_t *ent)
 {
 	float thinktime;
 
-	if (!ent)
+	if (!ent || !ent->inuse)
 	{
 		return false;
 	}
@@ -557,7 +557,8 @@ retry:
 	}
 
 	VectorCopy(trace.endpos, ent->s.origin);
-	gi.linkentity(ent);
+	if (ent->inuse)
+		gi.linkentity(ent);
 
 	if (trace.fraction != 1.0)
 	{

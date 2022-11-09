@@ -2163,7 +2163,7 @@ int G_SpawnCheckpoints (edict_t *ent)
 		gi.cprintf(NULL, PRINT_CHAT, "G_SpawnCheckpoints: cannot read file '%s' into memory!\n", fileName);
 		if(fileBuffer)
 		{
-			free(fileBuffer);
+			gi.TagFree(fileBuffer);
 		}
 		return false;
 	}

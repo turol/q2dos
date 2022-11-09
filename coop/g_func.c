@@ -4063,7 +4063,9 @@ void parseTargets(edict_t *self) /* FS: Zaero specific */
 		int i;
 
 		// do we have a series of targets to choose from randomly?
-		str = Z_MALLOC(strlen(self->target)+1);
+		//QW// This was allocating with TAG_GAME and
+		// probably slowly expanded memory use unless server was reset.
+		str = gi.TagMalloc((int)strlen(self->target) + 1, TAG_LEVEL);
 		strcpy(str, self->target);
 
 		// split up the targets
@@ -4083,7 +4085,7 @@ void parseTargets(edict_t *self) /* FS: Zaero specific */
 			strcpy(self->targets[i], targets[i]);
 		}
 		self->target = NULL;
-		Z_FREE(str);
+		gi.TagFree(str);
 	}
 
 	self->numTargets = numTargets;

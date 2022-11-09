@@ -208,7 +208,7 @@ PMenu_UpdateEntry(pmenu_t *entry, const char *text, int align,
 void
 PMenu_Do_Update(edict_t *ent)
 {
-	char string[1400];
+	char string[LAYOUT_MAX_LENGTH];
 	int i;
 	pmenu_t *p;
 	int x;
@@ -435,7 +435,7 @@ PMenu_Select(edict_t *ent)
 void
 PMenu_Do_Scrolling_Update(edict_t *ent) /* FS */
 {
-	char string[1400];
+	char string[LAYOUT_MAX_LENGTH];
 	int i, z, pos, scroll_lines, fixed_lines = 0;
 	pmenu_t *p;
 	int x;

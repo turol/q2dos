@@ -1151,7 +1151,6 @@ Cmd_Help_f(edict_t *ent)
 	ent->client->showhelp = true;
 	ent->client->pers.helpchanged = 0;
 	HelpComputerMessage(ent);
-	gi.unicast(ent, true);
 }
 
 void

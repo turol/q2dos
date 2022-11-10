@@ -846,6 +846,11 @@ P_FallingDamage(edict_t *ent)
 		return;
 	}
 
+	if (ent->client->hook_state == HOOK_ON)
+	{
+		return;
+	}
+
 	if (ent->waterlevel == 2)
 	{
 		delta *= 0.25;

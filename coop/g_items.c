@@ -179,6 +179,10 @@ DoRespawn(edict_t *ent)
 		int choice;
 
 		master = ent->teammaster;
+		if (!master)
+		{
+			return;
+		}
 
 		for (count = 0, ent = master; ent; ent = ent->chain, count++)
 		{
@@ -2180,7 +2184,7 @@ droptofloor(edict_t *ent)
 	{
 		gi.setmodel(ent, ent->model);
 	}
-	else if (ent->item->world_model) /* FS: Coop: Rogue specific */
+	else if (ent->item->world_model) /* FS: Coop: Rogue specific sanity check.  Looks OK to keep. */
 	{
 		gi.setmodel(ent, ent->item->world_model);
 	}

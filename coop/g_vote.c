@@ -67,6 +67,7 @@ void VoteMenuOpen (edict_t *ent);
 void vote_playerexit (edict_t *ent);
 void vote_kickban (edict_t *ent, char *playerName, qboolean banPlayer);
 void vote_kickban_menu (edict_t *ent, int entNum, qboolean banPlayer);
+void vote_hook(edict_t *ent);
 
 #define VOTEMENU_TYPE 6
 #define VOTEMENU_PROGYES 8
@@ -267,10 +268,14 @@ void vote_command (edict_t *ent)
 			vote_kickban_menu(ent, atoi(gi.argv(2)), true);
 		}
 	}
+	else if (!Q_stricmp(gi.argv(1), "hook"))
+	{
+		vote_hook(ent);
+	}
 	else
 	{
 		gi.cprintf(ent, PRINT_HIGH, "Unknown vote command: %s.  ", gi.argv(1));
-		gi.cprintf(ent, PRINT_HIGH, "valid options are: vote map <mapname>, vote gamemode <gamemode>, vote skill <coopskill>, vote kick <playername>, vote ban <playername>, vote restartmap, vote playerexit, vote yes, vote no, vote stop, and vote progress.\n");
+		gi.cprintf(ent, PRINT_HIGH, "valid options are: vote map <mapname>, vote gamemode <gamemode>, vote skill <coopskill>, vote kick <playername>, vote ban <playername>, vote restartmap, vote playerexit, vote hook, vote yes, vote no, vote stop, and vote progress.\n");
 		return;
 	}
 }
@@ -945,7 +950,12 @@ void vote_Passed (void)
 	}
 	else if (!Q_stricmp(voteType, "playerexit"))
 	{
-		gi.cvar_forceset("sv_coop_check_player_exit", voteGamemode); /* FS: Hacky, just reuse voteGamemode */
+		gi.cvar_forceset("sv_coop_check_player_exit", voteGamemode);
+		Com_sprintf(voteCbufCmdExecute, sizeof(voteCbufCmdExecute), "\n");
+	}
+	else if (!Q_stricmp(voteType, "hook"))
+	{
+		gi.cvar_forceset("sv_allow_hook", voteGamemode);
 		Com_sprintf(voteCbufCmdExecute, sizeof(voteCbufCmdExecute), "\n");
 	}
 	else if (!Q_stricmp(voteType, "kick player"))
@@ -1550,6 +1560,55 @@ void vote_kickban_menu (edict_t *ent, int entNum, qboolean banPlayer)
 		Com_sprintf(voteType, sizeof(voteType), "kick player");
 	else
 		Com_sprintf(voteType, sizeof(voteType), "ban player");
+
+	ent->voteInitiator = true;
+
+	if (sv_vote_assume_yes->intValue)
+	{
+		vote_yes(ent, true); /* FS: I assume you would want to vote yes if you initiated the vote. */
+	}
+
+	vote_menu_broadcast();
+}
+
+void vote_hook(edict_t *ent)
+{
+	if (!ent || !ent->client)
+	{
+		gi.dprintf(DEVELOPER_MSG_GAME, "Error: vote_hook from a non-player!\n");
+		return;
+	}
+
+	if (bVoteInProgress)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "A vote is already in progress for %s: %s!\n", voteType, whatAreWeVotingFor);
+		return;
+	}
+
+	vote_Reset();
+
+	if (sv_vote_disallow_flags->intValue & VOTE_NOHOOK)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Voting for changing grappling hook is not allowed on this server.  Vote cancelled.\n");
+		return;
+	}
+
+	if (sv_allow_hook->intValue)
+	{
+		vote_Broadcast("%s votes for disabling the grappling hook! Use vote yes or vote no to submit your vote!\n", ent->client->pers.netname);
+		Com_sprintf(whatAreWeVotingFor, sizeof(whatAreWeVotingFor), "Disabled");
+		Com_sprintf(voteGamemode, sizeof(voteGamemode), "0");
+	}
+	else
+	{
+		vote_Broadcast("%s votes for enabling the grappling hook! Use vote yes or vote no to submit your vote!\n", ent->client->pers.netname);
+		Com_sprintf(whatAreWeVotingFor, sizeof(whatAreWeVotingFor), "Enabled");
+		Com_sprintf(voteGamemode, sizeof(voteGamemode), "1");
+	}
+
+	voteClients = P_Clients_Connected(false);
+	bVoteInProgress = true;
+	Com_sprintf(voteType, sizeof(voteType), "hook");
 
 	ent->voteInitiator = true;
 

@@ -26,7 +26,7 @@
 
 #include "g_local.h"
 
-#define COOP_VERSION			0.01b
+#define COOP_VERSION			0.02
 #define COOP_VSTRING2(x) #x
 #define COOP_VSTRING(x) COOP_VSTRING2(x)
 #define COOP_STRING_VERSION  COOP_VSTRING(COOP_VERSION)
@@ -48,6 +48,9 @@ void CoopVoteRestartMap(edict_t *ent, pmenuhnd_t *p);
 void CoopVotePlayerReq(edict_t *ent, pmenuhnd_t *p);
 void CoopVotePlayerKick(edict_t *ent, pmenuhnd_t *p);
 void CoopVotePlayerBan(edict_t *ent, pmenuhnd_t *p);
+void CoopVoteHookMenu(edict_t *ent, pmenuhnd_t *p);
+void CoopUpdateVoteHookMenu(edict_t *ent);
+void CoopVoteToggleHook(edict_t *ent, pmenuhnd_t *p);
 void CoopCheckGamemode(edict_t *ent, pmenuhnd_t *p);
 void CoopCheckDifficulty(edict_t *ent, pmenuhnd_t *p);
 void votemenu_loadmaplist (void);
@@ -140,6 +143,7 @@ pmenu_t votemenu[] = {
 	{"Exit Requirements", PMENU_ALIGN_LEFT, CoopVotePlayerReq},
 	{"Kick Player", PMENU_ALIGN_LEFT, CoopVotePlayerKick},
 	{"Ban Player", PMENU_ALIGN_LEFT, CoopVotePlayerBan},
+	{"Grappling Hook", PMENU_ALIGN_LEFT, CoopVoteHookMenu},
 	{NULL, PMENU_ALIGN_CENTER, NULL},
 	{"Return to Main Menu", PMENU_ALIGN_LEFT, CoopReturnToMain}
 };
@@ -337,6 +341,30 @@ pmenu_t playerbanmenu[] = {
 	{NULL, PMENU_ALIGN_LEFT, NULL}, /* 6 */
 	{NULL, PMENU_ALIGN_LEFT, NULL},
 	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{NULL, PMENU_ALIGN_LEFT, NULL}, /* 16 */
+	{NULL, PMENU_ALIGN_CENTER, NULL},
+	{"Return to Main Menu", PMENU_ALIGN_LEFT, CoopReturnToMain}
+};
+
+#define HOOKMENU_STATUS 6
+#define HOOKMENU_VOTEOPTION 8
+pmenu_t hookmenu[] = {
+	{"*Quake II", PMENU_ALIGN_CENTER, NULL},
+	{"*Mara'akate and Freewill", PMENU_ALIGN_CENTER, NULL},
+	{"*Custom Coop", PMENU_ALIGN_CENTER, NULL},
+	{NULL, PMENU_ALIGN_CENTER, NULL},
+	{"*Grappling Hook", PMENU_ALIGN_CENTER, NULL}, /* 4 */
+	{NULL, PMENU_ALIGN_CENTER, NULL},
+	{"Status: LOADING...", PMENU_ALIGN_LEFT, NULL}, /* 6 */
+	{NULL, PMENU_ALIGN_LEFT, NULL},
+	{"PLEASE WAIT...", PMENU_ALIGN_LEFT, CoopVoteToggleHook}, /* 8 */
 	{NULL, PMENU_ALIGN_LEFT, NULL},
 	{NULL, PMENU_ALIGN_LEFT, NULL},
 	{NULL, PMENU_ALIGN_LEFT, NULL},
@@ -1875,4 +1903,71 @@ void CoopVotePlayerBan(edict_t *ent, pmenuhnd_t *p /* unused */)
 	CoopInitVotePlayerBanMenu(ent);
 	PMenu_Open(ent, playerbanmenu, NULL, 0, sizeof(playerbanmenu) / sizeof(pmenu_t), 0, NULL, PMENU_NORMAL);
 	ent->client->menu_update = CoopUpdateVotePlayerBanMenu;
+}
+
+static void CoopInitVoteHookMenu(edict_t *ent)
+{
+	CoopUpdateVoteHookMenu(ent);
+}
+
+void CoopVoteHookMenu(edict_t *ent, pmenuhnd_t *p /* unused */)
+{
+	if (!ent || !ent->client)
+	{
+		return;
+	}
+
+	PMenu_Close(ent);
+	CoopInitVoteHookMenu(ent);
+	PMenu_Open(ent, hookmenu, NULL, 0, sizeof(hookmenu) / sizeof(pmenu_t), 0, NULL, PMENU_NORMAL);
+	ent->client->menu_update = CoopUpdateVoteHookMenu;
+}
+
+void CoopUpdateVoteHookMenu(edict_t *ent)
+{
+	static char status[20], option[20];
+	pmenuhnd_t *p;
+
+	if (!ent || !ent->client)
+	{
+		return;
+	}
+
+	p = ent->client->menu;
+	if (!p)
+	{
+		return;
+	}
+
+	if (sv_allow_hook->intValue)
+	{
+		Com_sprintf(status, sizeof(status), "Status: enabled");
+		Com_sprintf(option, sizeof(option), "Disable");
+	}
+	else
+	{
+		Com_sprintf(status, sizeof(status), "Status: disabled");
+		Com_sprintf(option, sizeof(option), "Enable");
+	}
+
+	PMenu_UpdateEntry(p->entries + HOOKMENU_STATUS, status, PMENU_ALIGN_LEFT, NULL);
+	PMenu_UpdateEntry(p->entries + HOOKMENU_VOTEOPTION, option, PMENU_ALIGN_LEFT, CoopVoteToggleHook);
+}
+
+void CoopVoteToggleHook(edict_t *ent, pmenuhnd_t *p /* unused */)
+{
+	static char cmd[11];
+
+	if (!ent || !ent->client)
+	{
+		return;
+	}
+
+	Com_sprintf(cmd, sizeof(cmd), "vote hook\n");
+
+	gi.WriteByte(svc_stufftext);
+	gi.WriteString(cmd);
+	gi.unicast(ent, true);
+
+	PMenu_Close(ent);
 }

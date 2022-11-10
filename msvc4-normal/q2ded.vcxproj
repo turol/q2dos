@@ -269,6 +269,7 @@
     <ClCompile Include="..\SERVER\sv_world.c" />
     <ClCompile Include="..\WIN32\net_wins.c" />
     <ClCompile Include="..\WIN32\q_shwin.c" />
+    <ClCompile Include="..\win32\service.c" />
     <ClCompile Include="..\WIN32\sys_win.c" />
     <ClCompile Include="..\win32\win_dedconsole.c" />
   </ItemGroup>

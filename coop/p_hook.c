@@ -42,7 +42,7 @@ edict_t* hook_laser_start(edict_t* ent)
 
 	if (!ent)
 	{
-		return;
+		return NULL;
 	}
 
 	self = G_Spawn();

@@ -105,6 +105,9 @@
     <ClCompile Include="..\qcommon\cmd_auto.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\win32\service.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\client\adivtab.h">

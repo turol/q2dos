@@ -243,6 +243,9 @@
     <ClCompile Include="..\dos\wss.c">
       <Filter>Source Files\DOS</Filter>
     </ClCompile>
+    <ClCompile Include="..\qcommon\cmd_auto.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\client\adivtab.h">

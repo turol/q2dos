@@ -1677,7 +1677,7 @@ SP_misc_explobox(edict_t *self)
 
 	self->model = "models/objects/barrels/tris.md2";
 	self->s.modelindex = gi.modelindex(self->model);
-	VectorSet(self->mins, -16, -16, -8);
+	VectorSet(self->mins, -16, -16, 0); /* FS: NOTE: DO NOT MERGE IN Z CHANGE TO -8 CAUSES BARRELS TO ORIENT WRONG AND FALL THROUGH FLOOR. */
 	VectorSet(self->maxs, 16, 16, 40);
 
 	if (!self->mass)
@@ -2592,7 +2592,7 @@ SP_misc_satellite_dish(edict_t *ent)
 
 	ent->movetype = MOVETYPE_NONE;
 	ent->solid = SOLID_BBOX;
-	VectorSet(ent->mins, -64, -64, -8); //QW// fix "not on quantization boundary" from r1q2ded (was 0)
+	VectorSet(ent->mins, -64, -64, 0);
 	VectorSet(ent->maxs, 64, 64, 128);
 	ent->s.modelindex = gi.modelindex("models/objects/satellite/tris.md2");
 	ent->use = misc_satellite_dish_use;

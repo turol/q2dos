@@ -301,7 +301,6 @@ typedef struct
 	FILE		*download;			// file transfer from server
 	char		downloadtempname[MAX_OSPATH];
 	char		downloadname[MAX_OSPATH];
-	int			downloadnumber;
 	dltype_t	downloadtype;
 	size_t		downloadposition;	// added for HTTP downloads
 	int			downloadpercent;

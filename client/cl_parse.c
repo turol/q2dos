@@ -115,6 +115,7 @@ qboolean	CL_CheckOrDownloadFile (char *filename)
 		// We return true so that the precache check keeps feeding us more files.
 		// Since we have multiple HTTP connections we want to minimize latency
 		// and be constantly sending requests, not one at a time.
+		cls.forcePacket = true;
 		return true;
 	}
 #endif
@@ -177,7 +178,6 @@ qboolean	CL_CheckOrDownloadFile (char *filename)
 		va("download %s", cls.downloadname));
 	}
 
-	cls.downloadnumber++;
 	cls.forcePacket = true;
 
 	return false;

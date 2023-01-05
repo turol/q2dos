@@ -211,6 +211,7 @@ static void CL_EscapeHTTPPath (const char *filePath, char *escaped)
 	}
 }
 
+/* FS: ATTENTION TO YOU!!! YES, YOU!!!  THIS NEEDS TO BE HERE OR LIBCURL AS DLL WILL FAIL FILE IO FUNCTIONS ON WINDOWS! */
 static size_t CL_HTTP_CurlWriteCB (void *data, size_t size, size_t nmemb, void *userdata)
 {
 	dlhandle_t *dl = (dlhandle_t *)userdata;
@@ -335,7 +336,7 @@ static void CL_StartHTTPDownload (dlqueue_t *entry, dlhandle_t *dl)
 	curl_easy_setopt (dl->curl, CURLOPT_WRITEDATA, dl);
 	if (dl->file)
 	{
-		curl_easy_setopt (dl->curl, CURLOPT_WRITEFUNCTION, CL_HTTP_CurlWriteCB);
+		curl_easy_setopt (dl->curl, CURLOPT_WRITEFUNCTION, CL_HTTP_CurlWriteCB); /* FS: ATTENTION TO YOU!!! YES, YOU!!!  THIS NEEDS TO BE HERE OR LIBCURL AS DLL WILL FAIL FILE IO FUNCTIONS ON WINDOWS! */
 	}
 	else
 	{

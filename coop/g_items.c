@@ -1235,7 +1235,7 @@ Pickup_Key(edict_t *ent, edict_t *other)
 				continue;
 			}
 
-			if ((ent->classname) && (!strcmp(ent->classname, "key_power_cube")))
+			if ((ent->classname) && !(ent->spawnflags & ITEM_NO_TOUCH) && (!strcmp(ent->classname, "key_power_cube")))
 			{
 				if (client->client->pers.power_cubes &
 					((ent->spawnflags & 0x0000ff00) >> 8))

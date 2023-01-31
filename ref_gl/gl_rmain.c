@@ -21,6 +21,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gl_local.h"
 #include <ctype.h>
 
+#ifdef REF_HARD_LINKED
+
+// these live in vid_dos.c
+#define REF_EXTERN extern
+
+#else  // REF_HARD_LINKED
+
+#define REF_EXTERN
+
+#endif  // REF_HARD_LINKED
+
+
 void R_Clear (void);
 
 viddef_t	vid;
@@ -147,10 +159,10 @@ cvar_t	*gl_3dlabs_broken;
 
 cvar_t	*vid_fullscreen;
 cvar_t	*vid_gamma;
-cvar_t	*vid_ref;
+REF_EXTERN cvar_t	*vid_ref;
 
 cvar_t	*r_skydistance; /* Knightmare- variable sky range */
-cvar_t	*developer;		/* Knightmare added */
+REF_EXTERN cvar_t	*developer;		/* Knightmare added */
 cvar_t	*r_gunfov;		/* FS */
 
 /*

@@ -33,6 +33,9 @@ typedef struct
 } partparms_t;
 
 /*static */partparms_t partparms;
+#ifdef id386
+extern
+#endif // id386
 /*static */unsigned int s_prefetch_address;
 
 #if !(id386)

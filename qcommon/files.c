@@ -126,10 +126,10 @@ static unsigned int FS_TypeFlagForPakItem (char *itemName)
 {
 	int		i;	
 	const char	*tmp;
-	char	extension[8];
+	char	extension[8] = { 0 };
 
 	tmp = COM_FileExtension (itemName);
-	strncpy(extension, tmp, sizeof(extension));
+	strncpy(extension, tmp, sizeof(extension) - 1);
 	for (i = 0; type_extensions[i]; i++) {
 		if (!Q_stricmp(extension, type_extensions[i]))
 			return (1<<i);

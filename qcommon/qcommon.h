@@ -700,6 +700,9 @@ qboolean	CM_HeadnodeVisible (int headnode, byte *visbits);
 void		CM_WritePortalState (FILE *f);
 void		CM_ReadPortalState (FILE *f);
 
+extern	cvar_t	*sv_entfile;
+extern	char	entBSP[MAX_MAP_ENTSTRING+1];
+
 /*
 ==============================================================
 

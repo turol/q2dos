@@ -1184,7 +1184,6 @@ void SV_DumpEntities_f (void)
 {
     FILE    *f;
     char    fileName[MAX_OSPATH];
-	extern	char	entBSP[MAX_MAP_ENTSTRING];
 
 	if (!svs.initialized)
 	{

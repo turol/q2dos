@@ -119,7 +119,6 @@ int		c_pointcontents;
 int		c_traces, c_brush_traces;
 
  /* FS: sv_entfile and friends stuff */
-extern	cvar_t	*sv_entfile;
 qboolean	entToggle;
 char	entBSP[MAX_MAP_ENTSTRING+1];
 

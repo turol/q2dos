@@ -1923,8 +1923,9 @@ void CL_WriteConfig_f (void)
 		if (Cmd_Argc() == 1)
 			COM_StripExtension(cfg_default->string, cfgName);
 		else
-			strncpy (cfgName, Cmd_Argv(1), sizeof(cfgName));
+			strncpy (cfgName, Cmd_Argv(1), sizeof(cfgName) - 1);
 
+		cfgName[MAX_QPATH - 1] = '\0';
 		CL_WriteConfiguration (cfgName);
 		Com_Printf ("Wrote config file %s/%s.cfg.\n", FS_Gamedir(), cfgName);
 	}
